@@ -1,0 +1,7 @@
+:root { --teal: #0b4f6c; --coral: #ff5a5f; --mint: #a8e6cf; --off-white: #f7fafa; --charcoal: #1e293b; --body: 'Noto Sans', 'Segoe UI', sans-serif; --heading: 'Manrope', 'Segoe UI', sans-serif; font-family: var(--body); color: var(--charcoal); background: var(--off-white); font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button { font-family: inherit; }
+
+:root[data-theme='dark'] { --off-white: #0b1420; --charcoal: #edf7f6; --teal: #57c6c0; --mint: #15352f; color: #dce9ea; background: #0b1420; }
+:root[data-theme='dark'] body { background: #0b1420; }
