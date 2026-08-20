@@ -60,7 +60,16 @@ const server = createServer((request, response) => {
   if (request.url === '/api/hospitals/nearby' && request.method === 'GET') { sendJson(response, 200, { demoData: true, hospitals: demoHospitals }); return }
   if (request.url === '/api/hospitals/recommend' && request.method === 'POST') { sendJson(response, 200, { demoData: true, recommendation: demoHospitals[0], alternatives: demoHospitals.slice(1) }); return }
   if (request.url === '/api/analytics' && request.method === 'GET') { sendJson(response, 200, { demoData: true, totalIncidents: 127, criticalIncidents: 31, averageResponseMinutes: 8.4, mostCommonEmergency: 'Medical' }); return }
-  if (request.url === '/api/notifications/create' && request.method === 'POST') { sendJson(response, 201, { demo: true, status: 'prepared', message: 'Demo notification prepared; no message was sent.' }); return }
+  if (request.url === '/api/notifications/create' && request.method === 'POST') {
+    let payload = ''
+    request.on('data', (chunk) => { payload += chunk })
+    request.on('end', () => {
+      const requestData = JSON.parse(payload || '{}')
+      const channels = Array.isArray(requestData.channels) ? requestData.channels : []
+      sendJson(response, 201, { demo: true, status: 'prepared', channels, location: requestData.location || null, message: 'Demo notification prepared; no message was sent.' })
+    })
+    return
+  }
   sendJson(response, 404, { error: 'Route not found' })
 })
 
