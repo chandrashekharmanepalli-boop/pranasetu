@@ -1,0 +1,19 @@
+{
+  "name": "ResQ AI",
+  "short_name": "ResQ",
+  "description": "Speak. Locate. Respond. Save Lives.",
+  "start_url": "/pranasetu/",
+  "scope": "/pranasetu/",
+  "display": "standalone",
+  "background_color": "#081622",
+  "theme_color": "#0b4f6c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/pranasetu/resq-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
