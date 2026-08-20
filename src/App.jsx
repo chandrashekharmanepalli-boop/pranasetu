@@ -59,8 +59,8 @@ const emergencyTranslations = {
 }
 
 const sharedTranslations = {
-  hi: { 'Back to home': 'होम पर लौटें', 'Return to home': 'होम पर लौटें', 'DEMO / SIMULATED': 'डेमो / सिम्युलेटेड', 'Provider-backed actions are clearly separated from this walkthrough.': 'प्रदाता-आधारित कार्रवाइयों को इस डेमो से अलग दिखाया गया है।' },
-  mr: { 'Back to home': 'होमवर परत जा', 'Return to home': 'होमवर परत जा', 'DEMO / SIMULATED': 'डेमो / सिम्युलेटेड', 'Provider-backed actions are clearly separated from this walkthrough.': 'प्रदाता-आधारित क्रिया या डेमोपासून वेगळ्या दाखवल्या आहेत.' },
+  hi: { 'Back to home': 'होम पर लौटें', 'Return to home': 'होम पर लौटें', 'DEMO / SIMULATED': 'डेमो / सिम्युलेटेड', 'Provider-backed actions are clearly separated from this walkthrough.': 'प्रदाता-आधारित कार्रवाइयों को इस डेमो से अलग दिखाया गया है।', 'Stop speaking': 'बोलना बंद करें', 'New conversation': 'नई बातचीत' },
+  mr: { 'Back to home': 'होमवर परत जा', 'Return to home': 'होमवर परत जा', 'DEMO / SIMULATED': 'डेमो / सिम्युलेटेड', 'Provider-backed actions are clearly separated from this walkthrough.': 'प्रदाता-आधारित क्रिया या डेमोपासून वेगळ्या दाखवल्या आहेत.', 'Stop speaking': 'बोलणे थांबवा', 'New conversation': 'नवीन संभाषण' },
   te: { 'Tell us what happened.': 'ఏం జరిగిందో చెప్పండి.', 'We heard you.': 'మీ మాట మాకు వినిపించింది.', 'Analyze emergency': 'అత్యవసర పరిస్థితిని విశ్లేషించండి', 'This needs urgent care.': 'దీనికి తక్షణ వైద్యం అవసరం.', 'Answer two quick questions': 'రెండు చిన్న ప్రశ్నలకు సమాధానం ఇవ్వండి', 'Where are you right now?': 'మీరు ప్రస్తుతం ఎక్కడ ఉన్నారు?', 'Capture location': 'స్థానాన్ని పొందండి', 'See recommendations': 'సిఫార్సులను చూడండి', 'View live route': 'ప్రత్యక్ష మార్గాన్ని చూడండి', 'Start navigation': 'నావిగేషన్ ప్రారంభించండి', 'Open command center': 'కమాండ్ సెంటర్ తెరవండి', 'Watch live status': 'ప్రత్యక్ష స్థితిని చూడండి', 'Mark as resolved': 'పరిష్కరించబడినదిగా గుర్తించండి', Continue: 'కొనసాగించండి' },
   ta: { 'Tell us what happened.': 'என்ன நடந்தது என்று சொல்லுங்கள்.', 'We heard you.': 'நாங்கள் உங்கள் தகவலைக் கேட்டோம்.', 'Analyze emergency': 'அவசரநிலையை ஆய்வு செய்', 'This needs urgent care.': 'இதற்கு உடனடி சிகிச்சை தேவை.', 'Answer two quick questions': 'இரண்டு கேள்விகளுக்கு பதிலளிக்கவும்', 'Where are you right now?': 'நீங்கள் இப்போது எங்கே இருக்கிறீர்கள்?', 'Capture location': 'இருப்பிடத்தைப் பெறுக', 'See recommendations': 'பரிந்துரைகளைக் காண்க', 'View live route': 'நேரடி வழியைக் காண்க', 'Start navigation': 'வழிசெலுத்தலைத் தொடங்கு', 'Open command center': 'கட்டுப்பாட்டு மையத்தைத் திற', 'Watch live status': 'நேரடி நிலையைப் பார்க்கவும்', 'Mark as resolved': 'தீர்வு எனக் குறிக்கவும்', Continue: 'தொடரவும்' },
   bn: { 'Tell us what happened.': 'কি ঘটেছে বলুন।', 'We heard you.': 'আমরা আপনার কথা শুনেছি।', 'Analyze emergency': 'জরুরি অবস্থা বিশ্লেষণ করুন', 'This needs urgent care.': 'এর জন্য জরুরি চিকিৎসা প্রয়োজন।', 'Answer two quick questions': 'দুটি প্রশ্নের উত্তর দিন', 'Where are you right now?': 'আপনি এখন কোথায় আছেন?', 'Capture location': 'অবস্থান নিন', 'See recommendations': 'সুপারিশ দেখুন', 'View live route': 'লাইভ রুট দেখুন', 'Start navigation': 'ন্যাভিগেশন শুরু করুন', 'Open command center': 'কমান্ড সেন্টার খুলুন', 'Watch live status': 'লাইভ অবস্থা দেখুন', 'Mark as resolved': 'সমাধান হিসেবে চিহ্নিত করুন', Continue: 'চালিয়ে যান' },
@@ -68,7 +68,7 @@ const sharedTranslations = {
   gu: { 'Tell us what happened.': 'શું થયું તે કહો.', 'We heard you.': 'અમે તમારી વાત સાંભળી.', 'Analyze emergency': 'કટોકટીનું વિશ્લેષણ કરો', 'This needs urgent care.': 'આ માટે તાત્કાલિક સારવાર જરૂરી છે.', 'Answer two quick questions': 'બે પ્રશ્નોના જવાબ આપો', 'Where are you right now?': 'તમે અત્યારે ક્યાં છો?', 'Capture location': 'સ્થાન મેળવો', 'See recommendations': 'ભલામણો જુઓ', 'View live route': 'લાઇવ માર્ગ જુઓ', 'Start navigation': 'નેવિગેશન શરૂ કરો', 'Open command center': 'કમાન્ડ સેન્ટર ખોલો', 'Watch live status': 'લાઇવ સ્થિતિ જુઓ', 'Mark as resolved': 'ઉકેલાયેલ તરીકે ચિહ્નિત કરો', Continue: 'ચાલુ રાખો' },
   pa: { 'Tell us what happened.': 'ਦੱਸੋ ਕੀ ਹੋਇਆ।', 'We heard you.': 'ਅਸੀਂ ਤੁਹਾਡੀ ਗੱਲ ਸੁਣੀ।', 'Analyze emergency': 'ਐਮਰਜੈਂਸੀ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ', 'This needs urgent care.': 'ਇਸ ਲਈ ਤੁਰੰਤ ਦੇਖਭਾਲ ਦੀ ਲੋੜ ਹੈ।', 'Answer two quick questions': 'ਦੋ ਸਵਾਲਾਂ ਦੇ ਜਵਾਬ ਦਿਓ', 'Where are you right now?': 'ਤੁਸੀਂ ਇਸ ਵੇਲੇ ਕਿੱਥੇ ਹੋ?', 'Capture location': 'ਟਿਕਾਣਾ ਲਵੋ', 'See recommendations': 'ਸਿਫ਼ਾਰਸ਼ਾਂ ਵੇਖੋ', 'View live route': 'ਲਾਈਵ ਰਸਤਾ ਵੇਖੋ', 'Start navigation': 'ਨੈਵੀਗੇਸ਼ਨ ਸ਼ੁਰੂ ਕਰੋ', 'Open command center': 'ਕਮਾਂਡ ਸੈਂਟਰ ਖੋਲ੍ਹੋ', 'Watch live status': 'ਲਾਈਵ ਸਥਿਤੀ ਵੇਖੋ', 'Mark as resolved': 'ਹੱਲ ਕੀਤਾ ਚਿੰਨ੍ਹਿਤ ਕਰੋ', Continue: 'ਜਾਰੀ ਰੱਖੋ' },
   ur: { 'Tell us what happened.': 'بتائیں کیا ہوا ہے۔', 'We heard you.': 'ہم نے آپ کی بات سن لی۔', 'Analyze emergency': 'ہنگامی حالت کا تجزیہ کریں', 'This needs urgent care.': 'اس کے لیے فوری نگہداشت ضروری ہے۔', 'Answer two quick questions': 'دو مختصر سوالوں کے جواب دیں', 'Where are you right now?': 'آپ اس وقت کہاں ہیں؟', 'Capture location': 'مقام حاصل کریں', 'See recommendations': 'سفارشات دیکھیں', 'View live route': 'لائیو راستہ دیکھیں', 'Start navigation': 'نیویگیشن شروع کریں', 'Open command center': 'کمانڈ سینٹر کھولیں', 'Watch live status': 'لائیو صورتحال دیکھیں', 'Mark as resolved': 'حل شدہ نشان زد کریں', Continue: 'جاری رکھیں' },
-  ml: { 'Tell us what happened.': 'എന്താണ് സംഭവിച്ചതെന്ന് പറയൂ.', 'We heard you.': 'ഞങ്ങൾ നിങ്ങളുടെ വാക്കുകൾ കേട്ടു.', 'Analyze emergency': 'അടിയന്തരാവസ്ഥ വിശകലനം ചെയ്യുക', 'This needs urgent care.': 'ഇതിന് അടിയന്തര പരിചരണം ആവശ്യമാണ്.', 'Answer two quick questions': 'രണ്ട് ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകുക', 'Where are you right now?': 'നിങ്ങൾ ഇപ്പോൾ എവിടെയാണ്?', 'Capture location': 'സ്ഥാനം നേടുക', 'See recommendations': 'ശുപാർശകൾ കാണുക', 'View live route': 'തത്സമയ വഴി കാണുക', 'Start navigation': 'നാവിഗേഷൻ ആരംഭിക്കുക', 'Open command center': 'കമാൻഡ് സെന്റർ തുറക്കുക', 'Watch live status': 'തത്സമയ നില കാണുക', 'Mark as resolved': 'പരിഹരിച്ചതായി അടയാളപ്പെടുത്തുക', Continue: 'തുടരുക' },
+  ml: { 'Tell us what happened.': 'എന്താണ് സംഭവിച്ചതെന്ന് പറയൂ.', 'We heard you.': 'ഞങ്ങൾ നിങ്ങളുടെ വാക്കുകൾ കേട്ടു.', 'Analyze emergency': 'അടിയന്തരാവസ്ഥ വിശകലനം ചെയ്യുക', 'This needs urgent care.': 'ഇതിന് അടിയന്തര പരിചരണം ആവശ്യമാണ്.', 'Answer two quick questions': 'രണ്ട് ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകുക', 'Where are you right now?': 'നിങ്ങൾ ഇപ്പോൾ എവിടെയാണ്?', 'Capture location': 'സ്ഥാനം നേടുക', 'See recommendations': 'ശുപാർശകൾ കാണുക', 'View live route': 'തത്സമയ വഴി കാണുക', 'Start navigation': 'നാവിഗേഷൻ ആരംഭിക്കുക', 'Open command center': 'കമാൻഡ് സെന്റർ തുറക്കുക', 'Watch live status': 'തത്സമയ നില കാണുക', 'Mark as resolved': 'പരിഹരിച്ചതായി അടയാളപ്പെടുത്തുക', Continue: 'തുടരുക', 'Stop speaking': 'സംസാരം നിർത്തുക', 'New conversation': 'പുതിയ സംഭാഷണം' },
 }
 
 function translateEmergency(text) { const language = window.localStorage.getItem('pranasetu-language') || 'en'; return emergencyTranslations[language]?.[text] || sharedTranslations[language]?.[text] || text }
@@ -89,6 +89,8 @@ function App() {
   const [transcript, setTranscript] = useState('')
   const [isListening, setIsListening] = useState(false)
   const [location, setLocation] = useState(null)
+  const conversationRef = useRef([])
+  const [conversationId, setConversationId] = useState(() => window.localStorage.getItem('pranasetu-conversation-id') || '')
   const [questionIndex, setQuestionIndex] = useState(0)
   const [darkMode] = useState(() => window.localStorage.getItem('pranasetu-theme') === 'dark')
   const [answer, setAnswer] = useState('')
@@ -108,20 +110,45 @@ function App() {
   const crashTestRef = useRef(null)
 
   const selectedLanguage = languages.find((item) => item.id === language)
+  useEffect(() => {
+    document.documentElement.dir = language === 'ur' ? 'rtl' : 'ltr'
+    document.documentElement.lang = language
+  }, [language])
+
+  const speakReply = (reply, replyLanguage) => {
+    if (!window.speechSynthesis || !reply) return
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(reply)
+    utterance.lang = replyLanguage.locale
+    utterance.rate = 0.96
+    window.speechSynthesis.speak(utterance)
+  }
+
+  const askPranaSetuAI = async (message, replyLanguage) => {
+    conversationRef.current = [...conversationRef.current, { role: 'user', content: message }]
+    try {
+      const response = await fetch('/api/ai/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, language: replyLanguage.id, conversationId }) })
+      if (!response.ok) throw new Error('AI service unavailable')
+      const result = await response.json()
+      setConversationId(result.conversationId || conversationId)
+      window.localStorage.setItem('pranasetu-conversation-id', result.conversationId || conversationId)
+      conversationRef.current = [...conversationRef.current, { role: 'assistant', content: result.reply }]
+      speakReply(result.reply, replyLanguage)
+      return result.reply
+    } catch {
+      const fallback = aiResponses[replyLanguage.id] || aiResponses.en
+      conversationRef.current = [...conversationRef.current, { role: 'assistant', content: fallback.play }]
+      speakReply(fallback.play, replyLanguage)
+      return fallback.play
+    }
+  }
   const acceptTranscript = (text) => {
     const detection = detectLanguage(text, language)
     const replyLanguage = languages.find((item) => item.id === detection.id) || selectedLanguage
-    const reply = aiResponses[detection.id] || aiResponses[language] || aiResponses.en
     setTranscript(text)
     window.localStorage.setItem('pranasetu-response-language', detection.id)
     if (detection.confident && detection.id !== language) changeLanguage(detection.id)
-    if (window.speechSynthesis && reply) {
-      window.speechSynthesis.cancel()
-      const utterance = new SpeechSynthesisUtterance(reply.play)
-      utterance.lang = replyLanguage.locale
-      utterance.rate = 0.96
-      window.speechSynthesis.speak(utterance)
-    }
+    askPranaSetuAI(text, replyLanguage)
     setScreen('transcript')
   }
 
@@ -287,9 +314,11 @@ function App() {
   useEffect(() => {
     window.pranaSetuBack = goBack
     window.pranaSetuAcceptTranscript = acceptTranscript
+    window.pranaSetuNewConversation = () => { conversationRef.current = []; setConversationId(''); window.localStorage.removeItem('pranasetu-conversation-id') }
     return () => {
       delete window.pranaSetuBack
       delete window.pranaSetuAcceptTranscript
+      delete window.pranaSetuNewConversation
     }
   })
 
@@ -309,7 +338,7 @@ function IntroPoster({ onSkip }) { return <div className="intro-poster"><div cla
 function Landing({ language, setLanguage, copy, onContinue, onConsole }) { return <div className="landing"><div className="landing-nav"><Logo /><nav className="landing-links"><a href="#how-it-works">How it works</a><a href="#features">Features</a><a href="#safety">Safety</a><button onClick={onConsole}>Open Emergency Console</button></nav><span className="language-caption">Choose language</span><select aria-label="Choose language" value={language} onChange={(event) => setLanguage(event.target.value)}>{languages.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></div><div className="landing-hero"><div className="hero-copy"><p className="eyebrow coral-text">SPEAK · LOCATE · RESPOND</p><h1>{copy.hero}</h1><p className="hero-sub">PranaSetu understands your emergency, identifies your location, finds suitable nearby medical facilities, and coordinates the next response in your language.</p><button className="primary-button" onClick={onContinue}>{copy.start} <span>→</span></button><p className="trust-line"><span>✦</span> Built for calm decisions under pressure</p></div><div className="hero-visual"><div className="pulse-orbit orbit-one" /><div className="pulse-orbit orbit-two" /><div className="hero-pin"><svg viewBox="0 0 46 46" aria-hidden="true"><path d="M8 30c6.5 0 6.5-12 13-12s6.5 12 13 12" /><path className="logo-pulse" d="M18.5 18 22 11l3.5 7" /><circle cx="22" cy="10" r="2.4" /></svg></div><span className="hero-label label-you">You are here</span><span className="hero-label label-help">Help is on the way</span><div className="hero-status-card"><span className="status-pulse" /><small>PRANASETU AI · SYSTEM READY</small><strong>Emergency response<br />coordinated</strong><b>3 hospitals nearby</b></div></div></div><div className="landing-footer"><span>24 / 7 emergency coordination</span><span>English · हिन्दी · मराठी</span><span>© 2026 PranaSetu</span></div></div> }
 function Login({ onLogin, onBack }) { return <div className="login-page"><div className="login-panel"><BackButton onBack={onBack} /><Logo /><p className="eyebrow">YOUR CARE CIRCLE</p><h1>Welcome back.</h1><p>Sign in to stay connected to the people who matter.</p><label>Mobile number<input placeholder="+91 00000 00000" /></label><button className="primary-button full" onClick={onLogin}>Continue securely <span>→</span></button><button className="demo-link" onClick={onLogin}>Use demo access</button><small className="secure-note">⌾ Your information stays private and encrypted.</small></div></div> }
 function ScreenFrame({ eyebrow, title, description, children, action, actionLabel = 'Continue' }) { return <div className="screen-frame"><BackButton /><div className="screen-heading"><p className="eyebrow coral-text">{translateEmergency(eyebrow)}</p><h1>{translateEmergency(title)}</h1><p>{translateEmergency(description)}</p></div>{children}<button className="primary-button" onClick={action}>{translateEmergency(actionLabel)} <span>→</span></button></div> }
-function Voice({ language, isListening, onListen, onDemo, onText }) { const voiceDescription = language.id === 'hi' ? 'हिंदी में सहज बोलें। हम महत्वपूर्ण जानकारी सुनेंगे।' : language.id === 'mr' ? 'मराठीत सहज बोला. आम्ही महत्त्वाची माहिती ऐकू.' : `Speak naturally in ${language.label}. We will listen for the details that matter.`; const listenLabel = language.id === 'hi' ? 'सुनना शुरू करें' : language.id === 'mr' ? 'ऐकणे सुरू करा' : 'Start speaking'; const demoLabel = language.id === 'hi' ? 'डेमो आवाज़ उपयोग करें' : language.id === 'mr' ? 'डेमो आवाज वापरा' : 'Use demo voice transcript'; const [text, setText] = useState(''); const submitText = () => { if (text.trim()) (onText || window.pranaSetuAcceptTranscript)?.(text.trim()) }; const submitDemo = () => { if (window.pranaSetuAcceptTranscript) window.pranaSetuAcceptTranscript(language.sample); else onDemo() }; return <ScreenFrame eyebrow="VOICE INTAKE" title="Tell us what happened." description={voiceDescription} action={onListen} actionLabel={isListening ? 'Listening…' : listenLabel}><div className={isListening ? 'voice-orb listening' : 'voice-orb'}><span className="voice-wave">〰</span><small>{isListening ? 'Listening for your emergency' : 'Your voice is your fastest route to help'}</small></div><textarea className="emergency-text-input" value={text} onChange={(event) => setText(event.target.value)} placeholder="Type what happened in any supported language" aria-label="Describe the emergency" /><button className="secondary-button" onClick={submitText}>Send typed report <span>→</span></button><button className="secondary-button" onClick={submitDemo}>{demoLabel} <span>⌁</span></button><p className="ai-demo-reply">AI assistant ready · your reply will be returned in {language.label}.</p></ScreenFrame> }
+function Voice({ language, isListening, onListen, onDemo, onText }) { const voiceDescription = language.id === 'hi' ? 'हिंदी में सहज बोलें। हम महत्वपूर्ण जानकारी सुनेंगे।' : language.id === 'mr' ? 'मराठीत सहज बोला. आम्ही महत्त्वाची माहिती ऐकू.' : `Speak naturally in ${language.label}. We will listen for the details that matter.`; const listenLabel = language.id === 'hi' ? 'सुनना शुरू करें' : language.id === 'mr' ? 'ऐकणे सुरू करा' : 'Start speaking'; const demoLabel = language.id === 'hi' ? 'डेमो आवाज़ उपयोग करें' : language.id === 'mr' ? 'डेमो आवाज वापरा' : 'Use demo voice transcript'; const [text, setText] = useState(''); const submitText = () => { if (text.trim()) (onText || window.pranaSetuAcceptTranscript)?.(text.trim()) }; const submitDemo = () => { if (window.pranaSetuAcceptTranscript) window.pranaSetuAcceptTranscript(language.sample); else onDemo() }; const stopSpeech = () => window.speechSynthesis?.cancel(); const newConversation = () => window.pranaSetuNewConversation?.(); return <ScreenFrame eyebrow="VOICE INTAKE" title="Tell us what happened." description={voiceDescription} action={onListen} actionLabel={isListening ? 'Listening…' : listenLabel}><div className={isListening ? 'voice-orb listening' : 'voice-orb'}><span className="voice-wave">〰</span><small>{isListening ? 'Listening for your emergency' : 'Your voice is your fastest route to help'}</small></div><textarea className="emergency-text-input" value={text} onChange={(event) => setText(event.target.value)} placeholder="Type what happened in any supported language" aria-label="Describe the emergency" /><button className="secondary-button" onClick={submitText}>Send typed report <span>→</span></button><button className="secondary-button" onClick={submitDemo}>{demoLabel} <span>⌁</span></button><div className="assistant-controls"><button className="secondary-button" onClick={stopSpeech}>{translateEmergency('Stop speaking')}</button><button className="secondary-button" onClick={newConversation}>{translateEmergency('New conversation')}</button></div><p className="ai-demo-reply">PranaSetu AI ready · replies in {language.label}.</p></ScreenFrame> }
 function Transcript({ text, language, notice, onContinue }) { const detectedId = window.localStorage.getItem('pranasetu-response-language'); const responseLanguage = languages.find((item) => item.id === detectedId) || language; return <ScreenFrame eyebrow="TRANSCRIPT" title="We heard you." description="Check the words below before we assess the situation." action={onContinue} actionLabel="Analyze emergency"><div className="transcript-box"><span className="quote-mark">“</span><p>{text}</p><span className="transcript-meta">Detected language · {responseLanguage.label} <b>✓</b></span>{notice && <small className="language-notice">{notice}</small>}</div></ScreenFrame> }
 const aiResponses = {
   en: { prompt: 'Emergency activated. Tell us what happened.', title: 'This needs urgent care.', summary: 'This situation may require immediate professional medical assistance.', play: 'A nearby emergency facility has been identified. Please follow the recommended route.' },

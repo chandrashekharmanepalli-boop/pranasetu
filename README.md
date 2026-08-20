@@ -39,7 +39,7 @@ Open the local URL printed by Vite. The frontend proxies `/api` requests to the 
 
 The demo uses explicit demo-mode transcript and Pune location fallbacks. Real browser speech recognition and geolocation are used when available. No API keys are required. The quick-action surfaces cover Guardian, Devices, Map, Hospitals, Contacts, Emergency Profile, Incidents, Responder, Admin, Settings, Privacy, and demo signup without changing the existing visual theme.
 
-The local API exposes `GET /api/health`, `POST /api/emergencies`, `GET /api/emergencies/:id`, `PATCH /api/emergencies/:id/status`, `GET /api/emergencies/:id/events`, `GET /api/hospitals/nearby`, `POST /api/hospitals/recommend`, `POST /api/notifications/create`, and `GET /api/analytics`. Hospital availability and notifications are explicitly demo/simulated unless connected to verified providers.
+The local API exposes `GET /api/health`, `POST /api/ai/chat`, `POST /api/emergencies`, `GET /api/emergencies/:id`, `PATCH /api/emergencies/:id/status`, `GET /api/emergencies/:id/events`, `GET /api/hospitals/nearby`, `POST /api/hospitals/recommend`, `POST /api/notifications/create`, and `GET /api/analytics`. `/api/ai/chat` uses the zero-key demo provider and always returns the requested supported language. Hospital availability and notifications are explicitly demo/simulated unless connected to verified providers.
 
 ## Checks
 

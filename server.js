@@ -29,6 +29,20 @@ const demoHospitals = [
   },
 ]
 
+const demoReplies = {
+  en: 'This may be an emergency. Stay with the person, avoid food or drink, and seek immediate professional emergency assistance.',
+  hi: 'यह आपातकाल हो सकता है। व्यक्ति के साथ रहें, उन्हें खाना या पानी न दें और तुरंत पेशेवर आपातकालीन सहायता लें।',
+  mr: 'ही आपत्कालीन स्थिती असू शकते. व्यक्तीजवळ रहा, त्यांना खाणे किंवा पाणी देऊ नका आणि त्वरित वैद्यकीय मदत घ्या.',
+  te: 'ఇది అత్యవసర పరిస్థితి కావచ్చు. వ్యక్తి దగ్గర ఉండండి, ఆహారం లేదా పానీయం ఇవ్వకండి మరియు వెంటనే అత్యవసర వైద్య సహాయం తీసుకోండి.',
+  ta: 'இது அவசரநிலையாக இருக்கலாம். அந்த நபருடன் இருங்கள், உணவு அல்லது பானம் கொடுக்காதீர்கள், உடனடி மருத்துவ உதவியைப் பெறுங்கள்.',
+  bn: 'এটি জরুরি অবস্থা হতে পারে। ব্যক্তির সঙ্গে থাকুন, খাবার বা পানীয় দেবেন না এবং অবিলম্বে জরুরি চিকিৎসা সহায়তা নিন।',
+  kn: 'ಇದು ತುರ್ತು ಪರಿಸ್ಥಿತಿಯಾಗಿರಬಹುದು. ವ್ಯಕ್ತಿಯೊಂದಿಗೆ ಇರಿ, ಆಹಾರ ಅಥವಾ ಪಾನೀಯ ನೀಡಬೇಡಿ ಮತ್ತು ತಕ್ಷಣ ವೈದ್ಯಕೀಯ ಸಹಾಯ ಪಡೆಯಿರಿ.',
+  gu: 'આ કટોકટી હોઈ શકે છે. વ્યક્તિ સાથે રહો, ખોરાક અથવા પીણું આપશો નહીં અને તરત તબીબી સહાય મેળવો.',
+  pa: 'ਇਹ ਐਮਰਜੈਂਸੀ ਹੋ ਸਕਦੀ ਹੈ। ਵਿਅਕਤੀ ਦੇ ਨਾਲ ਰਹੋ, ਖਾਣ-ਪੀਣ ਨਾ ਦਿਓ ਅਤੇ ਤੁਰੰਤ ਡਾਕਟਰੀ ਮਦਦ ਲਵੋ।',
+  ur: 'یہ ہنگامی صورتحال ہو سکتی ہے۔ شخص کے ساتھ رہیں، کھانا یا پانی نہ دیں اور فوری طبی مدد حاصل کریں۔',
+  ml: 'ഇത് അടിയന്തരാവസ്ഥയായിരിക്കാം. വ്യക്തിയുടെ കൂടെ നിൽക്കുക, ഭക്ഷണമോ പാനീയമോ നൽകരുത്, ഉടൻ വൈദ്യസഹായം തേടുക.',
+}
+
 function sendJson(response, status, body) {
   response.writeHead(status, {
     'Content-Type': 'application/json',
@@ -81,6 +95,23 @@ const server = createServer(async (request, response) => {
         ok: true,
         service: 'pranasetu-coordination',
         incidents: incidents.length,
+      })
+      return
+    }
+
+    if (url === '/api/ai/chat' && request.method === 'POST') {
+      const payload = await readJson(request)
+      const language = typeof payload.language === 'string' && demoReplies[payload.language] ? payload.language : 'en'
+      const message = typeof payload.message === 'string' ? payload.message.trim().slice(0, 2000) : ''
+      if (!message) {
+        sendJson(response, 400, { error: 'Message is required', language })
+        return
+      }
+      sendJson(response, 200, {
+        provider: 'demo',
+        language,
+        reply: demoReplies[language],
+        conversationId: payload.conversationId || `demo-${Date.now()}`,
       })
       return
     }
