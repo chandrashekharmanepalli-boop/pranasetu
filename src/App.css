@@ -92,6 +92,7 @@
 .language-notice { display: block; margin-top: 10px; color: #6b938b; font-size: 9px; }
 .ai-demo-reply { margin: 14px 0 0; color: #6b938b; font-size: 10px; text-align: center; }
 .assistant-controls { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+.assistant-ask-again { display: block; margin: 10px auto 0; }
 :root[dir='rtl'] { text-align: right; }
 :root[dir='rtl'] .logo-lockup, :root[dir='rtl'] .home-header, :root[dir='rtl'] .incident-header { direction: rtl; }
 :root[dir='rtl'] .screen-heading, :root[dir='rtl'] .portal-main, :root[dir='rtl'] .login-panel { text-align: right; }
