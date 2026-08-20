@@ -129,3 +129,6 @@
 :root[dir='rtl'] .back-button span:first-child { transform: rotate(180deg); }
 :root[dir='rtl'] .assistant-controls { flex-direction: row-reverse; }
 :root[data-theme='dark'] .back-button, :root[data-theme='dark'] .emergency-text-input { border-color: #3b6570; background: #173340; color: #e5f0ef; }
+@keyframes sos-heartbeat { 0%, 42%, 100% { transform: scale(1); box-shadow: 0 17px 35px rgba(255,90,95,.24), 0 0 0 1px rgba(255,90,95,.2); } 14% { transform: scale(1.045); box-shadow: 0 21px 40px rgba(255,90,95,.3), 0 0 0 10px rgba(255,90,95,.09); } 28% { transform: scale(1.015); box-shadow: 0 18px 36px rgba(255,90,95,.26), 0 0 0 5px rgba(255,90,95,.05); } }
+.emergency-button { animation: sos-heartbeat 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .emergency-button { animation: none; } }
