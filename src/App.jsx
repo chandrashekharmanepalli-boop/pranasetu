@@ -110,9 +110,18 @@ function App() {
   const selectedLanguage = languages.find((item) => item.id === language)
   const acceptTranscript = (text) => {
     const detection = detectLanguage(text, language)
+    const replyLanguage = languages.find((item) => item.id === detection.id) || selectedLanguage
+    const reply = aiResponses[detection.id] || aiResponses[language] || aiResponses.en
     setTranscript(text)
     window.localStorage.setItem('pranasetu-response-language', detection.id)
     if (detection.confident && detection.id !== language) changeLanguage(detection.id)
+    if (window.speechSynthesis && reply) {
+      window.speechSynthesis.cancel()
+      const utterance = new SpeechSynthesisUtterance(reply.play)
+      utterance.lang = replyLanguage.locale
+      utterance.rate = 0.96
+      window.speechSynthesis.speak(utterance)
+    }
     setScreen('transcript')
   }
 
