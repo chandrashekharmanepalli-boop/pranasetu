@@ -74,11 +74,12 @@ const sharedTranslations = {
 function translateEmergency(text) { const language = window.localStorage.getItem('pranasetu-language') || 'en'; return emergencyTranslations[language]?.[text] || sharedTranslations[language]?.[text] || text }
 
 function Logo() {
-  return <div className="logo-lockup"><BackButton /><span className="logo-mark"><svg viewBox="0 0 46 46" aria-hidden="true"><path d="M8 30c6.5 0 6.5-12 13-12s6.5 12 13 12" /><path className="logo-pulse" d="M18.5 18 22 11l3.5 7" /><circle cx="22" cy="10" r="2.4" /></svg></span><span><strong>PranaSetu</strong><small>bridge of life</small></span><LanguageButton /><ThemeButton /></div>
+  return <div className="logo-lockup"><BackButton /><span className="logo-mark"><svg viewBox="0 0 46 46" aria-hidden="true"><path d="M8 30c6.5 0 6.5-12 13-12s6.5 12 13 12" /><path className="logo-pulse" d="M18.5 18 22 11l3.5 7" /><circle cx="22" cy="10" r="2.4" /></svg></span><span><strong>PranaSetu</strong><small>bridge of life</small></span><LanguageButton /><ThemeButton /><BottomNav /></div>
 }
 
 function LanguageButton() { const [value, setValue] = useState(() => window.localStorage.getItem('pranasetu-language') || 'en'); useEffect(() => { const handleLanguageChange = (event) => setValue(event.detail); window.addEventListener('pranasetu-language-change', handleLanguageChange); return () => window.removeEventListener('pranasetu-language-change', handleLanguageChange) }, []); const changeLanguage = (nextLanguage) => { setValue(nextLanguage); window.localStorage.setItem('pranasetu-language', nextLanguage); window.dispatchEvent(new CustomEvent('pranasetu-language-change', { detail: nextLanguage })) }; return <select className="global-language-select" aria-label="Change website language" value={value} onChange={(event) => changeLanguage(event.target.value)}>{languages.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select> }
 function BackButton({ onBack }) { return <button className="back-button" onClick={onBack || (() => window.pranaSetuBack?.())} aria-label="Go back" title="Go back"><span aria-hidden="true">←</span><span>Back</span></button> }
+function BottomNav() { const navigate = (screen) => window.pranaSetuNavigate?.(screen); return <nav className="bottom-nav" aria-label="Primary navigation"><button onClick={() => navigate('home')}>⌂<span>Home</span></button><button className="bottom-nav-sos" onClick={() => window.pranaSetuEmergency?.()}>+<span>Emergency</span></button><button onClick={() => navigate('map-home')}>⌖<span>Map</span></button><button onClick={() => navigate('hospitals-home')}>＋<span>Hospitals</span></button><button onClick={() => navigate('settings')}>⚙<span>Settings</span></button></nav> }
 
 function ThemeButton() { const [darkMode, setDarkMode] = useState(() => window.localStorage.getItem('pranasetu-theme') === 'dark'); const toggle = () => { const next = !darkMode; setDarkMode(next); document.documentElement.dataset.theme = next ? 'dark' : 'light'; window.localStorage.setItem('pranasetu-theme', next ? 'dark' : 'light') }; return <button className="theme-button" onClick={toggle} aria-label={darkMode ? 'Switch to light theme' : 'Switch to dark theme'} title={darkMode ? 'Light theme' : 'Dark theme'}>{darkMode ? '☀' : '◐'}<span>{darkMode ? 'Light' : 'Dark'}</span></button> }
 
@@ -316,13 +317,19 @@ function App() {
     escalateRef.current = (event) => escalateEmergency(event)
     crashTestRef.current = () => startCrashTest()
   })
+  // Global callbacks must be refreshed with the current emergency state.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     window.pranaSetuBack = goBack
+    window.pranaSetuNavigate = setScreen
+    window.pranaSetuEmergency = beginEmergency
     window.pranaSetuAcceptTranscript = acceptTranscript
     window.pranaSetuNewConversation = () => { conversationRef.current = []; setConversationId(''); window.localStorage.removeItem('pranasetu-conversation-id') }
     window.pranaSetuAskAgain = () => { window.speechSynthesis?.cancel(); setScreen('voice') }
     return () => {
       delete window.pranaSetuBack
+      delete window.pranaSetuNavigate
+      delete window.pranaSetuEmergency
       delete window.pranaSetuAcceptTranscript
       delete window.pranaSetuNewConversation
       delete window.pranaSetuAskAgain

@@ -4,6 +4,8 @@ const port = Number(process.env.PORT || 8787)
 const host = '0.0.0.0'
 
 const incidents = []
+const requestWindows = new Map()
+const MAX_BODY_BYTES = 256 * 1024
 
 const demoHospitals = [
   {
@@ -60,6 +62,9 @@ function readJson(request) {
 
     request.on('data', (chunk) => {
       payload += chunk
+      if (Buffer.byteLength(payload) > MAX_BODY_BYTES) {
+        request.destroy(new Error('Request body too large'))
+      }
     })
 
     request.on('end', () => {
@@ -76,6 +81,16 @@ function readJson(request) {
 
 const server = createServer(async (request, response) => {
   try {
+    const clientKey = request.socket.remoteAddress || 'unknown'
+    const now = Date.now()
+    const windowStart = now - 60_000
+    const recentRequests = (requestWindows.get(clientKey) || []).filter((timestamp) => timestamp > windowStart)
+    const requestLimit = request.url === '/api/ai/chat' ? 30 : 120
+    if (request.method !== 'OPTIONS' && recentRequests.length >= requestLimit) {
+      sendJson(response, 429, { error: 'Too many requests. Please try again shortly.' })
+      return
+    }
+    requestWindows.set(clientKey, [...recentRequests, now])
     if (request.method === 'OPTIONS') {
       response.writeHead(204, {
         'Access-Control-Allow-Origin': '*',
