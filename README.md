@@ -61,21 +61,22 @@ npm run build
 | AI classification                | 🟡 DEMO provider                    | Provider keys can be added later; no diagnosis is claimed                                                       |
 | Authentication/database/RLS      | 🔵 FUTURE INTEGRATION               | Current demo server is in-memory and has no production auth boundary                                            |
 | Realtime sync/PWA queue          | 🔵 FUTURE INTEGRATION               | Browser session flow works without refresh; Supabase/WebSocket sync is not configured                           |
+| Back button on listed routes     | 🟢 Demo flow                        | Shared accessible back control, logical fallback, and confirmation before leaving active emergency steps        |
 
 ### Language verification
 
 All 11 supported languages are present in the selector, persist through local storage, and map to a Web Speech locale. Demo transcript fallback and the core emergency copy are available for each language. Recognition quality still depends on browser and installed speech model.
 
-| Language  | UI selector | Speech locale | Demo fallback |
-| --------- | ----------- | ------------- | ------------- |
-| English   | 🟢          | 🟢 `en-IN`    | 🟢            |
-| Hindi     | 🟢          | 🟢 `hi-IN`    | 🟢            |
-| Marathi   | 🟢          | 🟢 `mr-IN`    | 🟢            |
-| Telugu    | 🟢          | 🟢 `te-IN`    | 🟢            |
-| Tamil     | 🟢          | 🟢 `ta-IN`    | 🟢            |
-| Bengali   | 🟢          | 🟢 `bn-IN`    | 🟢            |
-| Kannada   | 🟢          | 🟢 `kn-IN`    | 🟢            |
-| Gujarati  | 🟢          | 🟢 `gu-IN`    | 🟢            |
-| Punjabi   | 🟢          | 🟢 `pa-IN`    | 🟢            |
-| Urdu      | 🟢          | 🟢 `ur-IN`    | 🟢            |
-| Malayalam | 🟢          | 🟢 `ml-IN`    | 🟢            |
+| Language  | UI selector | Voice recognition | Same-language AI text/TTS | Demo fallback |
+| --------- | ----------- | ----------------- | ------------------------- | ------------- |
+| English   | 🟢          | 🟢 `en-IN`        | 🟢                        | 🟢            |
+| Hindi     | 🟢          | 🟢 `hi-IN`        | 🟢                        | 🟢            |
+| Marathi   | 🟢          | 🟢 `mr-IN`        | 🟢                        | 🟢            |
+| Telugu    | 🟢          | 🟢 `te-IN`        | 🟢                        | 🟢            |
+| Tamil     | 🟢          | 🟢 `ta-IN`        | 🟢                        | 🟢            |
+| Bengali   | 🟢          | 🟢 `bn-IN`        | 🟢                        | 🟢            |
+| Kannada   | 🟢          | 🟢 `kn-IN`        | 🟢                        | 🟢            |
+| Gujarati  | 🟢          | 🟢 `gu-IN`        | 🟢                        | 🟢            |
+| Punjabi   | 🟢          | 🟢 `pa-IN`        | 🟢                        | 🟢            |
+| Urdu      | 🟢          | 🟢 `ur-IN`        | 🟢                        | 🟢            |
+| Malayalam | 🟢          | 🟢 `ml-IN`        | 🟢                        | 🟢            |

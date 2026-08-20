@@ -17,6 +17,17 @@ const languages = [
   { id: 'ml', label: 'മലയാളം', locale: 'ml-IN', sample: 'റോഡ് അപകടം സംഭവിച്ചു, ഒരാൾ ബോധരഹിതനാണ്.' },
 ]
 
+function detectLanguage(text, fallback = 'en') {
+  const ranges = [
+    ['hi', /[\u0900-\u097F]/], ['bn', /[\u0980-\u09FF]/], ['pa', /[\u0A00-\u0A7F]/], ['gu', /[\u0A80-\u0AFF]/],
+    ['ta', /[\u0B80-\u0BFF]/], ['te', /[\u0C00-\u0C7F]/], ['kn', /[\u0C80-\u0CFF]/], ['ml', /[\u0D00-\u0D7F]/],
+  ]
+  const match = ranges.find(([, pattern]) => pattern.test(text))
+  if (match) return { id: match[0], confident: true }
+  if (/\p{Script=Latin}/u.test(text)) return { id: 'en', confident: true }
+  return { id: fallback, confident: false }
+}
+
 const hospitals = [
   { name: 'Ruby Hall Clinic', distance: '2.4 km', eta: '8 min', score: '96', reason: 'Cardiac care · fastest route' },
   { name: 'Jehangir Hospital', distance: '3.1 km', eta: '11 min', score: '91', reason: '24/7 emergency · ICU available' },
@@ -54,6 +65,7 @@ function Logo() {
 }
 
 function LanguageButton() { const [value, setValue] = useState(() => window.localStorage.getItem('pranasetu-language') || 'en'); useEffect(() => { const handleLanguageChange = (event) => setValue(event.detail); window.addEventListener('pranasetu-language-change', handleLanguageChange); return () => window.removeEventListener('pranasetu-language-change', handleLanguageChange) }, []); const changeLanguage = (nextLanguage) => { setValue(nextLanguage); window.localStorage.setItem('pranasetu-language', nextLanguage); window.dispatchEvent(new CustomEvent('pranasetu-language-change', { detail: nextLanguage })) }; return <select className="global-language-select" aria-label="Change website language" value={value} onChange={(event) => changeLanguage(event.target.value)}>{languages.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select> }
+function BackButton({ onBack }) { return <button className="back-button" onClick={onBack || (() => window.pranaSetuBack?.())} aria-label="Go back" title="Go back"><span aria-hidden="true">←</span><span>Back</span></button> }
 
 function ThemeButton() { const [darkMode, setDarkMode] = useState(() => window.localStorage.getItem('pranasetu-theme') === 'dark'); const toggle = () => { const next = !darkMode; setDarkMode(next); document.documentElement.dataset.theme = next ? 'dark' : 'light'; window.localStorage.setItem('pranasetu-theme', next ? 'dark' : 'light') }; return <button className="theme-button" onClick={toggle} aria-label={darkMode ? 'Switch to light theme' : 'Switch to dark theme'} title={darkMode ? 'Light theme' : 'Dark theme'}>{darkMode ? '☀' : '◐'}<span>{darkMode ? 'Light' : 'Dark'}</span></button> }
 
@@ -83,6 +95,13 @@ function App() {
   const crashTestRef = useRef(null)
 
   const selectedLanguage = languages.find((item) => item.id === language)
+  const acceptTranscript = (text) => {
+    const detection = detectLanguage(text, language)
+    setTranscript(text)
+    window.localStorage.setItem('pranasetu-response-language', detection.id)
+    if (detection.confident && detection.id !== language) changeLanguage(detection.id)
+    setScreen('transcript')
+  }
 
   useEffect(() => {
     window.localStorage.setItem('pranasetu-language', language)
@@ -124,8 +143,8 @@ function App() {
     const recognition = new Recognition()
     recognition.lang = selectedLanguage.locale
     recognition.continuous = false
-    recognition.onresult = (event) => { setTranscript(event.results[0][0].transcript); setIsListening(false); setScreen('transcript') }
-    recognition.onerror = () => { setTranscript(selectedLanguage.sample); setIsListening(false); setScreen('transcript') }
+    recognition.onresult = (event) => { window.pranaSetuAcceptTranscript?.(event.results[0][0].transcript); setIsListening(false) }
+    recognition.onerror = () => { window.pranaSetuAcceptTranscript?.(selectedLanguage.sample); setIsListening(false) }
     recognition.onend = () => setIsListening(false)
     recognition.start()
     return () => recognition.abort()
@@ -231,17 +250,33 @@ function App() {
     window.localStorage.setItem('pranasetu-guardian-mode', nextMode)
   }
   const currentFlowIndex = useMemo(() => flow.findIndex((item) => item.toLowerCase().replaceAll(' ', '-') === screen), [screen])
+  const goBack = () => {
+    const activeEmergency = ['voice', 'transcript', 'analysis', 'follow-up', 'gps', 'hospitals', 'ranking', 'map', 'navigation', 'tracking', 'timeline', 'command', 'live-status', 'crash-countdown'].includes(screen)
+    if (activeEmergency && !window.confirm('Leave the active emergency flow? Current demo progress may be lost.')) return
+    if (screen === 'login' || screen === 'signup' || screen === 'home' || screen === 'command-center') { setScreen(screen === 'home' ? 'landing' : screen === 'command-center' ? 'landing' : 'landing'); return }
+    if (['guardian', 'devices', 'map-home', 'hospitals-home', 'contacts', 'profile', 'incidents', 'responder', 'admin', 'settings', 'privacy'].includes(screen)) { setScreen('home'); return }
+    const previous = { transcript: 'voice', analysis: 'transcript', 'follow-up': 'analysis', gps: 'follow-up', hospitals: 'gps', ranking: 'hospitals', map: 'ranking', navigation: 'map', tracking: 'navigation', timeline: 'tracking', command: 'timeline', 'live-status': 'command', 'crash-countdown': 'home' }[screen]
+    setScreen(previous || 'home')
+  }
   useEffect(() => {
     escalateRef.current = (event) => escalateEmergency(event)
     crashTestRef.current = () => startCrashTest()
+  })
+  useEffect(() => {
+    window.pranaSetuBack = goBack
+    window.pranaSetuAcceptTranscript = acceptTranscript
+    return () => {
+      delete window.pranaSetuBack
+      delete window.pranaSetuAcceptTranscript
+    }
   })
 
   if (showIntro) return <IntroPoster onSkip={() => setShowIntro(false)} />
 
   if (screen === 'landing') return <Landing language={language} setLanguage={changeLanguage} copy={interfaceCopy[language] || interfaceCopy.en} onContinue={() => setScreen('login')} onConsole={() => setScreen('command-center')} />
-  if (screen === 'login') return <Login onLogin={() => setScreen('home')} />
+  if (screen === 'login') return <Login onLogin={() => setScreen('home')} onBack={goBack} />
   if (screen === 'home') return <Home copy={interfaceCopy[language] || interfaceCopy.en} backendOnline={backendOnline} motionEnabled={motionEnabled} motionMode={motionMode} onEnableMotion={enableMotionMonitor} onEmergency={beginEmergency} onCrash={startCrashTest} onOpen={(page) => setScreen(page)} />
-  if (['guardian', 'devices', 'map-home', 'hospitals-home', 'contacts', 'profile', 'incidents', 'responder', 'admin', 'settings', 'privacy', 'signup'].includes(screen)) return <PortalPage page={screen} onBack={() => setScreen('home')} onEmergency={beginEmergency} onCrash={startCrashTest} />
+  if (['guardian', 'devices', 'map-home', 'hospitals-home', 'contacts', 'profile', 'incidents', 'responder', 'admin', 'settings', 'privacy', 'signup'].includes(screen)) return <PortalPage page={screen} onBack={goBack} onEmergency={beginEmergency} onCrash={startCrashTest} />
   if (screen === 'command-center') return <OperationsCenter onExit={() => setScreen('landing')} />
 
   return <div className="app-shell incident-shell"><header className="incident-header"><Logo /><div className="flow-progress"><span>Active emergency</span><div><i style={{ width: `${Math.max(8, (currentFlowIndex / (flow.length - 1)) * 100)}%` }} /></div></div><button className="quiet-button" onClick={() => setScreen('home')}>Exit to home</button></header><main className="incident-main">{screen === 'voice' && <Voice language={selectedLanguage} isListening={isListening} onListen={() => setIsListening(true)} onDemo={() => { setTranscript(selectedLanguage.sample); setScreen('transcript') }} />}{screen === 'transcript' && <Transcript text={transcript} language={selectedLanguage} onContinue={() => { addEvent('Transcript understood · chest pain detected'); setScreen('analysis') }} />}{screen === 'analysis' && <Analysis language={selectedLanguage} onContinue={() => setScreen('follow-up')} />}{screen === 'follow-up' && <FollowUp index={questionIndex} answer={answer} setAnswer={setAnswer} onSubmit={submitAnswer} />}{screen === 'gps' && <Gps location={location} onLocate={locate} />}{screen === 'hospitals' && <HospitalSearch onContinue={() => setScreen('ranking')} />}{screen === 'ranking' && <Ranking onContinue={() => { addEvent('Ruby Hall Clinic recommended · 96% match'); setScreen('map') }} />}{screen === 'map' && <MapView location={location} onContinue={() => setScreen('navigation')} />}{screen === 'navigation' && <Navigation onContinue={() => { addEvent('Route started to Ruby Hall Clinic'); setScreen('tracking') }} />}{screen === 'tracking' && <Tracking onContinue={() => { addEvent('Responder accepted · Ruby Hall Clinic notified'); setScreen('timeline') }} />}{screen === 'timeline' && <Timeline events={timeline} onContinue={() => setScreen('command')} />}{screen === 'command' && <CommandCenter onContinue={() => setScreen('live-status')} />}{screen === 'live-status' && <LiveStatus onContinue={() => { addEvent('Patient stable · hospital handoff complete'); setScreen('resolved') }} />}{screen === 'resolved' && <Resolved onReset={() => { setTimeline([]); setQuestionIndex(0); setScreen('home') }} />}{screen === 'crash-countdown' && <CrashCountdown language={selectedLanguage} countdown={countdown} onCancel={() => { setCrashMode(false); addEvent('Crash alert dismissed by user'); setScreen('home') }} onSendHelp={() => { setCrashMode(false); addEvent('User selected Send Help · automatic emergency confirmed'); setScreen('gps') }} />}</main><div className="privacy-strip">{backendOnline ? '● Coordination service connected' : '○ Demo mode · coordination service offline'} <span>Private and encrypted</span></div></div>
@@ -250,10 +285,10 @@ function App() {
 function IntroPoster({ onSkip }) { return <div className="intro-poster"><div className="intro-grid" /><div className="intro-orbit intro-orbit-one" /><div className="intro-orbit intro-orbit-two" /><div className="intro-content"><div className="intro-logo"><svg viewBox="0 0 46 46" aria-hidden="true"><path d="M8 30c6.5 0 6.5-12 13-12s6.5 12 13 12" /><path className="intro-pulse" d="M18.5 18 22 11l3.5 7" /><circle cx="22" cy="10" r="2.4" /></svg></div><p className="intro-overline">AI EMERGENCY RESPONSE</p><h1>Prana<span>Setu</span></h1><p className="intro-tagline">Speak. Locate. Respond.</p><div className="intro-loader"><i /><i /><i /></div></div><button className="intro-skip" onClick={onSkip}>Skip intro</button><small className="intro-footer">A bridge to life · 24 / 7 coordination</small></div> }
 
 function Landing({ language, setLanguage, copy, onContinue, onConsole }) { return <div className="landing"><div className="landing-nav"><Logo /><nav className="landing-links"><a href="#how-it-works">How it works</a><a href="#features">Features</a><a href="#safety">Safety</a><button onClick={onConsole}>Open Emergency Console</button></nav><span className="language-caption">Choose language</span><select aria-label="Choose language" value={language} onChange={(event) => setLanguage(event.target.value)}>{languages.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></div><div className="landing-hero"><div className="hero-copy"><p className="eyebrow coral-text">SPEAK · LOCATE · RESPOND</p><h1>{copy.hero}</h1><p className="hero-sub">PranaSetu understands your emergency, identifies your location, finds suitable nearby medical facilities, and coordinates the next response in your language.</p><button className="primary-button" onClick={onContinue}>{copy.start} <span>→</span></button><p className="trust-line"><span>✦</span> Built for calm decisions under pressure</p></div><div className="hero-visual"><div className="pulse-orbit orbit-one" /><div className="pulse-orbit orbit-two" /><div className="hero-pin"><svg viewBox="0 0 46 46" aria-hidden="true"><path d="M8 30c6.5 0 6.5-12 13-12s6.5 12 13 12" /><path className="logo-pulse" d="M18.5 18 22 11l3.5 7" /><circle cx="22" cy="10" r="2.4" /></svg></div><span className="hero-label label-you">You are here</span><span className="hero-label label-help">Help is on the way</span><div className="hero-status-card"><span className="status-pulse" /><small>PRANASETU AI · SYSTEM READY</small><strong>Emergency response<br />coordinated</strong><b>3 hospitals nearby</b></div></div></div><div className="landing-footer"><span>24 / 7 emergency coordination</span><span>English · हिन्दी · मराठी</span><span>© 2026 PranaSetu</span></div></div> }
-function Login({ onLogin }) { return <div className="login-page"><div className="login-panel"><Logo /><p className="eyebrow">YOUR CARE CIRCLE</p><h1>Welcome back.</h1><p>Sign in to stay connected to the people who matter.</p><label>Mobile number<input placeholder="+91 00000 00000" /></label><button className="primary-button full" onClick={onLogin}>Continue securely <span>→</span></button><button className="demo-link" onClick={onLogin}>Use demo access</button><small className="secure-note">⌾ Your information stays private and encrypted.</small></div></div> }
-function ScreenFrame({ eyebrow, title, description, children, action, actionLabel = 'Continue' }) { return <div className="screen-frame"><div className="screen-heading"><p className="eyebrow coral-text">{eyebrow}</p><h1>{translateEmergency(title)}</h1><p>{translateEmergency(description)}</p></div>{children}<button className="primary-button" onClick={action}>{translateEmergency(actionLabel)} <span>→</span></button></div> }
-function Voice({ language, isListening, onListen, onDemo }) { const voiceDescription = language.id === 'hi' ? 'हिंदी में सहज बोलें। हम महत्वपूर्ण जानकारी सुनेंगे।' : language.id === 'mr' ? 'मराठीत सहज बोला. आम्ही महत्त्वाची माहिती ऐकू.' : `Speak naturally in ${language.label}. We will listen for the details that matter.`; const listenLabel = language.id === 'hi' ? 'सुनना शुरू करें' : language.id === 'mr' ? 'ऐकणे सुरू करा' : 'Start speaking'; const demoLabel = language.id === 'hi' ? 'डेमो आवाज़ उपयोग करें' : language.id === 'mr' ? 'डेमो आवाज वापरा' : 'Use demo voice transcript'; return <ScreenFrame eyebrow="VOICE INTAKE" title="Tell us what happened." description={voiceDescription} action={onListen} actionLabel={isListening ? 'Listening…' : listenLabel}><div className={isListening ? 'voice-orb listening' : 'voice-orb'}><span className="voice-wave">〰</span><small>{isListening ? 'Listening for your emergency' : 'Your voice is your fastest route to help'}</small></div><button className="secondary-button" onClick={onDemo}>{demoLabel} <span>⌁</span></button></ScreenFrame> }
-function Transcript({ text, language, onContinue }) { return <ScreenFrame eyebrow="TRANSCRIPT" title="We heard you." description="Check the words below before we assess the situation." action={onContinue} actionLabel="Analyze emergency"><div className="transcript-box"><span className="quote-mark">“</span><p>{text}</p><span className="transcript-meta">Detected language · {language.label} <b>✓</b></span></div></ScreenFrame> }
+function Login({ onLogin, onBack }) { return <div className="login-page"><div className="login-panel"><BackButton onBack={onBack} /><Logo /><p className="eyebrow">YOUR CARE CIRCLE</p><h1>Welcome back.</h1><p>Sign in to stay connected to the people who matter.</p><label>Mobile number<input placeholder="+91 00000 00000" /></label><button className="primary-button full" onClick={onLogin}>Continue securely <span>→</span></button><button className="demo-link" onClick={onLogin}>Use demo access</button><small className="secure-note">⌾ Your information stays private and encrypted.</small></div></div> }
+function ScreenFrame({ eyebrow, title, description, children, action, actionLabel = 'Continue' }) { return <div className="screen-frame"><BackButton /><div className="screen-heading"><p className="eyebrow coral-text">{eyebrow}</p><h1>{translateEmergency(title)}</h1><p>{translateEmergency(description)}</p></div>{children}<button className="primary-button" onClick={action}>{translateEmergency(actionLabel)} <span>→</span></button></div> }
+function Voice({ language, isListening, onListen, onDemo, onText }) { const voiceDescription = language.id === 'hi' ? 'हिंदी में सहज बोलें। हम महत्वपूर्ण जानकारी सुनेंगे।' : language.id === 'mr' ? 'मराठीत सहज बोला. आम्ही महत्त्वाची माहिती ऐकू.' : `Speak naturally in ${language.label}. We will listen for the details that matter.`; const listenLabel = language.id === 'hi' ? 'सुनना शुरू करें' : language.id === 'mr' ? 'ऐकणे सुरू करा' : 'Start speaking'; const demoLabel = language.id === 'hi' ? 'डेमो आवाज़ उपयोग करें' : language.id === 'mr' ? 'डेमो आवाज वापरा' : 'Use demo voice transcript'; const [text, setText] = useState(''); const submitText = () => { if (text.trim()) (onText || window.pranaSetuAcceptTranscript)?.(text.trim()) }; const submitDemo = () => { if (window.pranaSetuAcceptTranscript) window.pranaSetuAcceptTranscript(language.sample); else onDemo() }; return <ScreenFrame eyebrow="VOICE INTAKE" title="Tell us what happened." description={voiceDescription} action={onListen} actionLabel={isListening ? 'Listening…' : listenLabel}><div className={isListening ? 'voice-orb listening' : 'voice-orb'}><span className="voice-wave">〰</span><small>{isListening ? 'Listening for your emergency' : 'Your voice is your fastest route to help'}</small></div><textarea className="emergency-text-input" value={text} onChange={(event) => setText(event.target.value)} placeholder="Type what happened in any supported language" aria-label="Describe the emergency" /><button className="secondary-button" onClick={submitText}>Send typed report <span>→</span></button><button className="secondary-button" onClick={submitDemo}>{demoLabel} <span>⌁</span></button></ScreenFrame> }
+function Transcript({ text, language, notice, onContinue }) { const detectedId = window.localStorage.getItem('pranasetu-response-language'); const responseLanguage = languages.find((item) => item.id === detectedId) || language; return <ScreenFrame eyebrow="TRANSCRIPT" title="We heard you." description="Check the words below before we assess the situation." action={onContinue} actionLabel="Analyze emergency"><div className="transcript-box"><span className="quote-mark">“</span><p>{text}</p><span className="transcript-meta">Detected language · {responseLanguage.label} <b>✓</b></span>{notice && <small className="language-notice">{notice}</small>}</div></ScreenFrame> }
 const aiResponses = {
   en: { prompt: 'Emergency activated. Tell us what happened.', title: 'This needs urgent care.', summary: 'This situation may require immediate professional medical assistance.', play: 'A nearby emergency facility has been identified. Please follow the recommended route.' },
   hi: { prompt: 'आपातकाल शुरू हो गया है। बताइए क्या हुआ।', title: 'यह तत्काल सहायता की स्थिति है।', summary: 'यह स्थिति तुरंत पेशेवर चिकित्सा सहायता की मांग कर सकती है।', play: 'एक नजदीकी आपातकालीन सुविधा की पहचान की गई है। कृपया सुझाए गए मार्ग का पालन करें।' },

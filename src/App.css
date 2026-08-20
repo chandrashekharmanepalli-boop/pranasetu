@@ -84,3 +84,10 @@
 :root[data-theme='dark'] .quick-tools button, :root[data-theme='dark'] .portal-status { border-color: #29404d; background: #132333; color: #8bd8d0; }
 :root[data-theme='dark'] .portal-description, :root[data-theme='dark'] .portal-status small { color: #a9c0c3; }
 @media (max-width: 700px) { .quick-tools { grid-template-columns: repeat(3, 1fr); }.portal-main { padding: 10vh 0; }.portal-main h1 { font-size: 36px; } }
+.back-button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 9px 12px; border: 1px solid #cddfda; border-radius: 7px; color: var(--teal); background: rgba(255,255,255,.72); font: 700 11px var(--body); cursor: pointer; }
+.back-button:hover, .back-button:focus-visible { border-color: var(--teal); outline: 2px solid rgba(11,79,108,.2); outline-offset: 2px; }
+.screen-frame > .back-button { margin-bottom: 24px; }
+.login-panel > .back-button { margin-bottom: 24px; }
+.emergency-text-input { display: block; width: 100%; min-height: 92px; margin: 12px 0; resize: vertical; border: 1px solid #d9e6e1; border-radius: 7px; padding: 13px; color: var(--charcoal); background: white; font: 13px/1.5 var(--body); }
+.language-notice { display: block; margin-top: 10px; color: #6b938b; font-size: 9px; }
+:root[data-theme='dark'] .back-button, :root[data-theme='dark'] .emergency-text-input { border-color: #3b6570; background: #173340; color: #e5f0ef; }
