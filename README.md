@@ -26,6 +26,48 @@ npm run dev
 
 Open the local URL printed by Vite. The frontend proxies `/api` requests to the coordination server on port `8787`.
 
+The current lightweight structure keeps the React client in `src/` and the Node coordination server in `server.js` at the repository root. It is intentionally dependency-light and runs without API keys or a database service.
+
+Optional environment values are documented in `.env.example`. Never commit a real `.env` file or provider secret.
+
+## Flagship demos
+
+### Demo A: active multilingual report
+
+1. Start the backend and frontend.
+2. Choose a language, enter demo access, and press **Emergency**.
+3. Use the microphone or type `There has been a road accident, one person is unconscious.`.
+4. PranaSetu AI detects the language, calls the zero-key `/api/ai/chat` demo provider, displays the response, and speaks it using the selected locale.
+5. Continue through triage, GPS, hospital ranking, map, simulated responder tracking, and resolution.
+
+Try the same flow with Hindi, Telugu, Marathi, or any of the other supported languages. Browser speech recognition/TTS availability varies by browser; the typed and demo transcript paths work without microphone support.
+
+### Demo B: silent/passive Guardian flow
+
+1. Open Home and select **Guardian** or **Test crash detection**.
+2. Allow motion/location permissions when the browser requests them, or use the labeled demo trigger.
+3. Choose **Send Help**, or let the 15-second safety countdown expire.
+4. The app captures the best available GPS position, creates a `PS-*` incident, prepares simulated family/hospital/police alerts, shows nearby hospitals, and continues live GPS updates when permission is available.
+
+All external notifications, responder dispatch, hospital contact, police contact, bed/ICU status, and emergency calls are visibly demo/future integrations. The browser cannot diagnose an accident or monitor a closed tab.
+
+## Exact commands
+
+```bash
+npm install
+npm run server
+# In a second terminal:
+npm run dev
+```
+
+Run checks with:
+
+```bash
+npm run build
+npm run lint
+node --check server.js
+```
+
 ## Judge flow
 
 1. Choose English, Hindi, or Marathi on the landing screen.
@@ -62,6 +104,8 @@ npm run build
 | Authentication/database/RLS      | 🔵 FUTURE INTEGRATION               | Current demo server is in-memory and has no production auth boundary                                            |
 | Realtime sync/PWA queue          | 🔵 FUTURE INTEGRATION               | Browser session flow works without refresh; Supabase/WebSocket sync is not configured                           |
 | Back button on listed routes     | 🟢 Demo flow                        | Shared accessible back control, logical fallback, and confirmation before leaving active emergency steps        |
+| Bottom navigation                | 🟢 Demo flow                        | Home, Emergency, Map, Hospitals, and Settings controls are keyboard/touch accessible                            |
+| API rate limiting/input limits   | 🟢 Demo server                      | Per-IP request windows and bounded JSON bodies; production gateway still recommended                            |
 
 ### Language verification
 
