@@ -120,7 +120,12 @@ function App() {
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(reply)
     utterance.lang = replyLanguage.locale
-    utterance.rate = 0.96
+    utterance.rate = Number(window.localStorage.getItem('pranasetu-voice-rate') || 0.96)
+    utterance.pitch = Number(window.localStorage.getItem('pranasetu-voice-pitch') || 1)
+    utterance.volume = Number(window.localStorage.getItem('pranasetu-voice-volume') || 1)
+    const voiceName = window.localStorage.getItem('pranasetu-voice-name')
+    const voice = window.speechSynthesis.getVoices().find((item) => item.name === voiceName)
+    if (voice) utterance.voice = voice
     window.speechSynthesis.speak(utterance)
   }
 
@@ -396,7 +401,31 @@ function PortalDetails({ page }) {
   if (page === 'map-home') return <div className="portal-map"><RealMap location={{ lat: 18.5204, lng: 73.8567, label: 'Pune demo location' }} /><small>{translateEmergency('🟢 OpenStreetMap data · traffic layer is DEMO')}</small></div>
   if (page === 'hospitals-home') return <div className="portal-list">{hospitals.map((hospital) => <div className="portal-list-row" key={hospital.name}><strong>{hospital.name}</strong><span>{hospital.distance} · {hospital.eta}</span><small>{hospital.reason}</small><b>Live availability unavailable · DEMO route data</b></div>)}</div>
   if (page === 'contacts') return <div className="portal-contacts"><div><strong>Ambulance coordination</strong><span>112 · FUTURE INTEGRATION</span><button onClick={() => window.alert('DEMO: no real call was placed.')}>Call ambulance</button></div><div><strong>Police station</strong><span>112 · FUTURE INTEGRATION</span><button onClick={() => window.alert('DEMO: no real call was placed.')}>Contact police</button></div><div><strong>Family: Riya Sharma</strong><span>+91 98765 43210 · DEMO contact</span><button onClick={() => window.alert('DEMO: no message was sent.')}>Notify family</button></div></div>
+  if (page === 'settings') return <SettingsDetails />
+  if (page === 'incidents') return <IncidentsDetails />
   return null
+}
+
+function SettingsDetails() {
+  const [voices, setVoices] = useState([])
+  const [voiceName, setVoiceName] = useState(() => window.localStorage.getItem('pranasetu-voice-name') || '')
+  const [rate, setRate] = useState(() => Number(window.localStorage.getItem('pranasetu-voice-rate') || 0.96))
+  const [pitch, setPitch] = useState(() => Number(window.localStorage.getItem('pranasetu-voice-pitch') || 1))
+  const [volume, setVolume] = useState(() => Number(window.localStorage.getItem('pranasetu-voice-volume') || 1))
+  const [highContrast, setHighContrast] = useState(() => window.localStorage.getItem('pranasetu-high-contrast') === 'true')
+  const [reducedMotion, setReducedMotion] = useState(() => window.localStorage.getItem('pranasetu-reduced-motion') === 'true')
+  useEffect(() => { const loadVoices = () => setVoices(window.speechSynthesis?.getVoices() || []); loadVoices(); window.speechSynthesis?.addEventListener('voiceschanged', loadVoices); return () => window.speechSynthesis?.removeEventListener('voiceschanged', loadVoices) }, [])
+  const save = (key, value) => window.localStorage.setItem(key, String(value))
+  const toggleAccessibility = (key, value, setter) => { setter(value); save(key, value); document.documentElement.classList.toggle(key === 'pranasetu-high-contrast' ? 'high-contrast' : 'reduced-motion', value) }
+  const preview = () => { if (!window.speechSynthesis) return; window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance('PranaSetu AI voice preview'); utterance.rate = rate; utterance.pitch = pitch; utterance.volume = volume; utterance.voice = voices.find((voice) => voice.name === voiceName) || null; window.speechSynthesis.speak(utterance) }
+  return <div className="settings-panel"><label>AI voice character<select value={voiceName} onChange={(event) => { setVoiceName(event.target.value); save('pranasetu-voice-name', event.target.value) }}><option value="">Browser default voice</option>{voices.map((voice) => <option key={`${voice.name}-${voice.lang}`} value={voice.name}>{voice.name} · {voice.lang}</option>)}</select></label><label>Voice speed <input type="range" min="0.6" max="1.4" step="0.05" value={rate} onChange={(event) => { setRate(event.target.value); save('pranasetu-voice-rate', event.target.value) }} /></label><label>Voice character pitch <input type="range" min="0.5" max="1.5" step="0.05" value={pitch} onChange={(event) => { setPitch(event.target.value); save('pranasetu-voice-pitch', event.target.value) }} /></label><label>Voice volume <input type="range" min="0" max="1" step="0.05" value={volume} onChange={(event) => { setVolume(event.target.value); save('pranasetu-voice-volume', event.target.value) }} /></label><button className="secondary-button" onClick={preview}>Preview AI voice</button><label className="settings-toggle"><input type="checkbox" checked={highContrast} onChange={(event) => toggleAccessibility('pranasetu-high-contrast', event.target.checked, setHighContrast)} /> High contrast</label><label className="settings-toggle"><input type="checkbox" checked={reducedMotion} onChange={(event) => toggleAccessibility('pranasetu-reduced-motion', event.target.checked, setReducedMotion)} /> Reduced motion</label></div>
+}
+
+function IncidentsDetails() {
+  const [incidents, setIncidents] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => { fetch('/api/incidents').then((response) => response.json()).then((data) => setIncidents(data.incidents || [])).catch(() => setIncidents([])).finally(() => setLoading(false)) }, [])
+  return <div className="incident-list">{loading && <p>Loading nearby incidents…</p>}{!loading && incidents.length === 0 && <p>No nearby incidents reported in this demo session.</p>}{incidents.map((incident) => <article key={incident.id}><strong>{incident.id}</strong><span>{incident.source === 'AUTO_CRASH_DETECTION' ? 'Guardian/device event' : 'Emergency report'} · {incident.status}</span><small>{incident.location?.label || 'Location unavailable'} · {new Date(incident.createdAt).toLocaleTimeString()}</small><b>🟡 DEMO incident data</b></article>)}</div>
 }
 
 function Home({ copy, backendOnline, motionEnabled, motionMode, onEnableMotion, onEmergency, onCrash, onOpen }) { return <div className="app-shell home-shell"><header className="home-header"><Logo /><span className="service-status"><i /> {backendOnline ? 'Response network connected' : 'Demo response network'}</span><button className="quiet-button" onClick={() => onOpen('settings')}>Aarav Sharma</button></header><main className="home-main"><div className="home-intro"><p className="eyebrow">WEDNESDAY, 19 AUGUST 2026</p><h1>{copy.greeting}</h1><p>The people you care about are close, connected, and okay.</p></div><button className="emergency-button" onClick={onEmergency}><span>+</span><strong>{copy.emergency}</strong><small>{copy.speak}</small></button><div className="home-grid"><div className="home-card mint-surface"><p className="eyebrow">CARE CIRCLE</p><h2>All clear <b>✓</b></h2><p>12 people connected and checking in.</p><div className="circle-people"><span>RK</span><span>NP</span><span>MS</span><span>+9</span></div></div><div className="home-card"><p className="eyebrow">SAFETY MONITOR</p><h2>{motionEnabled ? 'Monitoring active' : 'Crash detection'}</h2><p>{motionEnabled ? `${motionMode === 'sensor' ? 'Accelerometer' : motionMode === 'orientation' ? 'Orientation sensor' : motionMode === 'pending' ? 'Permission pending' : 'Demo fallback'} monitoring active. We will ask if you are safe.` : 'Enable motion monitoring to detect a possible crash.'}</p><button className="secondary-button" onClick={onEnableMotion}>{motionEnabled ? 'Motion monitoring on' : 'Enable motion monitoring'} <span>⌁</span></button><button className="secondary-button test-crash-button" onClick={onCrash}>Test crash detection <span>↗</span></button></div></div><div className="quick-tools"><button onClick={() => onOpen('guardian')}>Guardian</button><button onClick={() => onOpen('hospitals-home')}>Hospitals</button><button onClick={() => onOpen('map-home')}>Map</button><button onClick={() => onOpen('contacts')}>Contacts</button><button onClick={() => onOpen('incidents')}>Incidents</button><button onClick={() => onOpen('settings')}>Settings</button></div><div className="loop-strip"><span>Speak</span><b>→</b><span>Understand</span><b>→</b><span>Locate</span><b>→</b><span>Respond</span></div></main></div> }
